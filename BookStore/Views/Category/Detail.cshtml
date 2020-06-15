@@ -5,9 +5,6 @@
     
 }
 <style>
-    .active-category {
-        background: #f0ffff;
-    }
 </style>
 <section class="breadcrumb-section">
     <h2 class="sr-only">Site Breadcrumb</h2>
@@ -242,8 +239,11 @@
                                         </a>
                                     </li>
                                 }
+
+
+
                             </ul>
-                                    }
+                                  }
                                     else
                                     {
                                     <spam>Không có trang nào</spam>
@@ -267,13 +267,13 @@
                                         <!-- Product Details Slider Big Image-->
                                         <div class="product-details-slider sb-slick-slider arrow-type-two"
                                              data-slick-setting='{
-              "slidesToShow": 1,
-              "arrows": false,
-              "fade": true,
-              "draggable": false,
-              "swipe": false,
-              "asNavFor": ".product-slider-nav"
-              }'>
+                                              "slidesToShow": 1,
+                                              "arrows": false,
+                                              "fade": true,
+                                              "draggable": false,
+                                              "swipe": false,
+                                              "asNavFor": ".product-slider-nav"
+                                              }'>
                                             <div class="single-slide">
                                                 <img src="~/~/image/products/product-details-1.jpg" alt="">
                                             </div>
@@ -293,16 +293,16 @@
                                         <!-- Product Details Slider Nav -->
                                         <div class="mt--30 product-slider-nav sb-slick-slider arrow-type-two"
                                              data-slick-setting='{
-            "infinite":true,
-              "autoplay": true,
-              "autoplaySpeed": 8000,
-              "slidesToShow": 4,
-              "arrows": true,
-              "prevArrow":{"buttonClass": "slick-prev","iconClass":"fa fa-chevron-left"},
-              "nextArrow":{"buttonClass": "slick-next","iconClass":"fa fa-chevron-right"},
-              "asNavFor": ".product-details-slider",
-              "focusOnSelect": true
-              }'>
+                                            "infinite":true,
+                                              "autoplay": true,
+                                              "autoplaySpeed": 8000,
+                                              "slidesToShow": 4,
+                                              "arrows": true,
+                                              "prevArrow":{"buttonClass": "slick-prev","iconClass":"fa fa-chevron-left"},
+                                              "nextArrow":{"buttonClass": "slick-next","iconClass":"fa fa-chevron-right"},
+                                              "asNavFor": ".product-details-slider",
+                                              "focusOnSelect": true
+                                              }'>
                                             <div class="single-slide">
                                                 <img src="~/~/image/products/product-details-1.jpg" alt="">
                                             </div>
@@ -414,14 +414,17 @@
                                 @foreach (KeyValuePair<Category, int> item in ViewData["category"] as Dictionary<Category, int>)
                                 {
                                     @if (item.Key.Parentid != null) continue;
-                                    <li class="@(ViewBag.ID == item.Key.Id?"active-category":"")"><a href="@Url.Action("Detail", "Category", new { id = item.Key.Id })">@item.Key.Title (@item.Value)</a></li>
+                                        <li class="@(ViewBag.ID == item.Key.Id?"active-category":"")">
+                                          <a href="@Url.Action("Detail", "Category", new { id = item.Key.Id })">@item.Key.Title (@item.Value)</a>
+                                        </li>
                                     @if (item.Key.ChildCategories != null && item.Key.ChildCategories.Count > 0)
                                     {
                                        
                                         <ul class="inner-cat-items">
                                             @foreach (var sub in item.Key.ChildCategories)
                                             {
-                                                <li class="@(ViewBag.ID == sub.Id?"active-category":"")"><a href="@Url.Action("Detail", "Category", new { id = sub.Id })">@sub.Title (
+                                                <li class="@(ViewBag.ID == sub.Id?"active-category":"")">
+                                                  <a href="@Url.Action("Detail", "Category", new { id = sub.Id })">@sub.Title (
                                                     @foreach(KeyValuePair<Category, int> item1 in ViewData["category"] as Dictionary<Category, int>)
                                                     {
                                                         @if(sub.Id == item1.Key.Id)
@@ -430,7 +433,9 @@
                                                             break;
                                                         }
                                                     }
-                                                    )</a></li>
+                                                    )
+                                                   </a>
+                                                </li>
                                             }
                                         </ul>
                                     }

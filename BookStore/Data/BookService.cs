@@ -16,10 +16,7 @@ namespace BookStore.Data
         {
             this.appDataContext = appDataContext;
         }
-        /// <summary>
-        /// lấy ra all danh sách Book
-        /// </summary>
-        /// <returns></returns>
+
         public ICollection<Book> ListAllBooks()
         {
             return appDataContext.Book.ToList();
@@ -29,23 +26,19 @@ namespace BookStore.Data
         {
             return appDataContext.Category.ToList();
         }
-
+        /// <summary>
+        /// lấy ra all danh sách Book
+        /// </summary>
+        /// <returns></returns>
         public List<Book> GetAllBookOfCategory(int categoryId)
         {
-            var query = from b in appDataContext.Book
-                        join cb in appDataContext.Categorybook on b.Id equals cb.BookId
-                        join c in appDataContext.Category on cb.CategoryId equals c.Id
-                        where cb.CategoryId == categoryId
-                        select b;
-            //var query = from b in appDataContext.Book select b;
+            var query = from book in appDataContext.Book
+                        join category_book in appDataContext.Categorybook on book.Id equals category_book.BookId
+                        join category in appDataContext.Category on category_book.CategoryId equals category.Id
+                        where category_book.CategoryId == categoryId
+                        select book;
             return query.ToList();
         }
-        //public IEnumerable<Book> GetPageBookOfCategory(int page,int pageSize)
-        //{
-        //    //var query = appDataContext.Book.ToPagedList(page,pageSize);
-        //    var query = (from b in appDataContext.Book select b).OrderBy(x => x.Id).ToPagedList(page, pageSize);
-        //    return query;
-        //}
         /// <summary>
         /// Lấy ra thông tin của 1 book 
         /// </summary>
@@ -62,8 +55,8 @@ namespace BookStore.Data
         /// <returns>Dictionary<Book, int></returns>
         public Dictionary<Book, int> FindAll(Dictionary<int, int> bookIds)
         {
-            var query = from kv in bookIds
-                        select new KeyValuePair<Book, int>(appDataContext.Book.Find(kv.Key), kv.Value);
+            var query = from key_Value in bookIds
+                        select new KeyValuePair<Book, int>(appDataContext.Book.Find(key_Value.Key), key_Value.Value);
             return query.ToDictionary(v => v.Key, v => v.Value);
         }
         /// <summary>
@@ -72,11 +65,9 @@ namespace BookStore.Data
         /// <returns>Dictionary<Category, int></returns>
         public Dictionary<Category, int> GetAllCategoryCount()
         {
-            //var categorys = from c in appDataContext.Category select c;
-            //Dictionary<Category, int> ds = new Dictionary<Category, int>();
-            var query = from c in appDataContext.Category
-                    select new KeyValuePair<Category,int>(c, (from cb in appDataContext.Categorybook where cb.CategoryId == c.Id 
-                                                             select cb).Count());
+            var query = from category in appDataContext.Category
+                    select new KeyValuePair<Category,int>(category, (from category_book in appDataContext.Categorybook where category_book.CategoryId == category.Id 
+                                                             select category_book).Count());
 
             return query.ToDictionary(v => v.Key, v => v.Value);
         }
@@ -90,17 +81,16 @@ namespace BookStore.Data
         /// <returns>danh sách book</returns>
         public List<Book> GetAllBookOfCategory(int categoryId,ref int tolalRecord,int pageIndex =1,int pageSize=6)
         {
-            tolalRecord = (from b in appDataContext.Book
-                           join cb in appDataContext.Categorybook on b.Id equals cb.BookId
-                           join c in appDataContext.Category on cb.CategoryId equals c.Id
-                           where cb.CategoryId == categoryId
-                           select b).Count();
-            var query = (from b in appDataContext.Book
-                        join cb in appDataContext.Categorybook on b.Id equals cb.BookId
-                        join c in appDataContext.Category on cb.CategoryId equals c.Id
-                        where cb.CategoryId == categoryId
-                        select b).Skip((pageIndex - 1) * pageSize).Take(pageSize);
-            //var query = from b in appDataContext.Book select b;
+            tolalRecord = (from book in appDataContext.Book
+                           join category_book in appDataContext.Categorybook on book.Id equals category_book.BookId
+                           join category in appDataContext.Category on category_book.CategoryId equals category.Id
+                           where category_book.CategoryId == categoryId
+                           select book).Count();
+            var query = (from book in appDataContext.Book
+                        join category_book in appDataContext.Categorybook on book.Id equals category_book.BookId
+                        join category in appDataContext.Category on category_book.CategoryId equals category.Id
+                        where category_book.CategoryId == categoryId
+                        select book).Skip((pageIndex - 1) * pageSize).Take(pageSize);
             return query.ToList();
         }
     }

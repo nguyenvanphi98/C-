@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BookStore.Data;
 using Microsoft.AspNetCore.Http;
@@ -32,9 +29,9 @@ namespace BookStore.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Login(Account U)
+        public IActionResult Login(Account User)
         {
-            var user = _acountService.GetAccount(U);
+            var user = _acountService.GetAccount(User);
             if (user != null)
             {
                 HttpContext.Session.SetString("User", user.UserName);
@@ -42,12 +39,11 @@ namespace BookStore.Controllers
 
                 return RedirectToAction("Index","Home");
             }
-            ViewBag.Message = "Mật khẩu hoặc tài khoản không đúng";
+            ViewBag.Message = "Tài khoản hoặc mật khẩu không đúng";
             return View();
         }
         public IActionResult Logout()
         {
-            //HttpContext.Session.Clear();
             HttpContext.Session.Remove("User");
             HttpContext.Session.Remove("Role");
             
@@ -63,33 +59,31 @@ namespace BookStore.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Register(Account U,string RepeatPassword)
+        public IActionResult Register(Account User,string RepeatPassword)
         {
-            Console.WriteLine("check1: " + RepeatPassword);
-            Console.WriteLine("check2: " + U.FullName+ ";"+U.Password +":"+U.UserName);
-            if (U != null)
+            if (User != null)
             {
-                if (U.FullName != null && U.UserName != null && U.Password != null && RepeatPassword != null)
+                if (User.FullName != null && User.UserName != null && User.Password != null && RepeatPassword != null)
                 {
-                    if (U.Password.Trim() != RepeatPassword.Trim())
+                    if (User.Password.Trim() != RepeatPassword.Trim())
                     {
                         ViewBag.ErrorMessage = "Mật Khẩu không trùng khớp";
                         return View();
                     }
 
-                    if (_acountService.CheckAccount(U.UserName))
+                    if (_acountService.CheckAccount(User.UserName))
                     {
-                        ViewBag.ErrorMessage = "Tài Khoản đã được đăng ký từ trước";
+                        ViewBag.ErrorMessage = "Tài khoản này đã tồn tại";
                         return View();
                     }
 
-                    _acountService.InsertAccount(U);
+                    _acountService.InsertAccount(User);
                     ViewBag.ErrorMessage = "Đăng ký thành công";
                     return View();
 
                 }
             }
-            ViewBag.ErrorMessage = "Làm ơn nhập thông tin";
+            ViewBag.ErrorMessage = "Vui lòng nhập thông tin";
             return View();
         }
     }
